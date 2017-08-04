@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Conversation with {{ contact.name }}{% endblock %}
+{% block body %}
+<div class="msg-thread" data-number="{{ contact.number }}">
+{% for message in thread %}
+    <div class="msg {% if message.inbound %}inbound{% else %}outbound{% endif %}" data-id="{{ message.id}}">
+        <div class="msg-top">{% if message.inbound %}{{ contact.name }}{% else %}Me{% endif %}</div>
+        <img src="https://via.placeholder.com/50x50" class="circle contact-photo" />
+        <div class="msg-text">{{ message.text }}</div>
+        <div class="timestamp" data-livestamp="{{ message.get_timestamp() }}"></div>
+    </div>
+{% endfor %}
+</div>
+<textarea class="textinput" autofocus="autofocus" data-to="{{ contact.number }}" data-from="{{ number }}"></textarea>
+{% endblock %}

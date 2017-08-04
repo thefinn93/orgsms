@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Conversations{% endblock %}
+{% block body %}
+<ul class="conversations">
+{% for thread in threads %}
+    <li class="conversation fakelink {% if thread.unread > 0 %}unread{% endif %}" data-href="{{ url_for('thread', number=thread.remote_number) }}">
+        <div class="left"><img src="https://via.placeholder.com/50x50" class="circle" /></div>
+        <div class="top">
+            <div class="name">{{ thread.name }}</div>
+            <div class="right" data-livestamp="{{ thread.get_timestamp() }}"></div>
+        </div>
+        <div class="number">{{ thread.remote_number }}</div>
+        <div class="preview-text">{{ thread.text }}</div>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

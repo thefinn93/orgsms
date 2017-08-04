@@ -1,0 +1,158 @@
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Semantic bullshit */
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.circle {
+  border-radius: 100%;
+}
+
+/* Fake links with data-href */
+.fakelink {
+  cursor: pointer;
+}
+
+/* all-thread view */
+.conversations {
+  list-style: none;
+  padding-left: 0;
+}
+
+.conversation {
+  border: solid black;
+  border-radius: 1em;
+  padding: 0.25em;
+  margin-bottom: 0.5em;
+  min-height: calc(50px + 1em);
+}
+
+.conversation:hover {
+  background-color: #eee;
+}
+
+.conversation.unread {
+  font-weight: bold;
+}
+
+.conversation .name {
+  display: inline;
+}
+
+.conversation .preview-text {
+  padding-top: 0.5em;
+  color: #555;
+}
+
+/* single-thread view */
+.msg-thread::after {
+  clear: both;
+}
+
+.msg-thread::before, .msg-thread::after {
+  content: " ";
+  display: table;
+}
+
+.msg-thread {
+  overflow-y: auto;
+  padding: 0 1em 50px 1em;
+  margin: 0 0 10px 0;
+}
+
+.msg {
+  min-height: 75px;
+  position: relative;
+}
+
+.msg .timestamp {
+  font-size: 0.5em;
+  color: #aaa;
+  position: absolute;
+  bottom: 0.5em;
+}
+
+.msg.inbound .timestamp {
+  right: 0;
+}
+
+.msg .msg-text {
+  border-radius: 5px;
+  position: relative;
+  padding: 5px 10px;
+  border: 1px solid #d2d6de;
+  color: #555;
+}
+
+.msg.outbound .msg-top {
+  text-align: right;
+}
+
+.msg.inbound .msg-text {
+  margin: 5px 0 1em 60px;
+}
+
+.msg.outbound .msg-text {
+  margin: 5px 60px 1em 0;
+}
+
+.msg.inbound .msg-text {
+  background: #d2d6de;
+}
+
+.msg.outbound .msg-text {
+  background: #fff;
+}
+
+.msg-thread .msg-text::after {
+  border-width: 5px;
+  margin-top: -5px;
+}
+
+.msg-thread .msg-text::before {
+  border-width: 6px;
+  margin-top: -6px;
+}
+
+.msg-thread .msg-text::before, .msg-thread .msg-text::after {
+  position: absolute;
+  top: 15px;
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+.msg.inbound .msg-text::before, .msg.inbound .msg-text::after {
+  right: 100%;
+  border-right-color: #d2d6de;
+}
+
+.msg.outbound .msg-text::before, .msg.outbound .msg-text::after {
+  left: 100%;
+  border-left-color: #d2d6de;
+}
+
+.msg.inbound .contact-photo {
+  float: left;
+}
+
+.msg.outbound .contact-photo {
+  float: right;
+}
+
+.textinput {
+  width: 95%;
+  right: 1em;
+  position: fixed;
+  bottom: 1em;
+  resize: none;
+}

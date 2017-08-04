@@ -1,0 +1,16 @@
+{
+  "name": "orgsms",
+  "version": "0.1.0",
+  "description": "Tool for managing organizational texting",
+  "main": "index.js",
+  "repository": "https://github.com/thefinn93/orgsms",
+  "author": "Finn <finn@finn.io>",
+  "license": "GPL-3.0",
+  "scripts": {
+    "postinstall": "./webpack.sh"
+  },
+  "dependencies": {
+    "moment": "^2.18.1",
+    "socket.io-client": "^2.0.3"
+  }
+}
