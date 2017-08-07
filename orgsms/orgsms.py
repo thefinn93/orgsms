@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, request
 from sqlalchemy import desc
 
 from . import models, api, config, version, socketio
@@ -17,6 +17,11 @@ with app.app_context():
 
 app.register_blueprint(api.app, url_prefix="/api")
 
+@app.before_request
+def check_remote_user():
+    if "USER_HEADER" in app.config and not request.path.startswith("/api/inbound"):
+        if request.headers.get(app.config['USER_HEADER'], "") == "":
+            abort(401)
 
 @app.context_processor
 def inject_version():
