@@ -84,7 +84,7 @@ body {
 
 .msg-thread {
   overflow-y: auto;
-  padding: 0 1em 50px 1em;
+  padding: calc(2em + 18pt) 1em 50px 1em;
   margin: 0 0 10px 0;
 }
 
