@@ -52,6 +52,27 @@ body {
 }
 
 /* single-thread view */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 18pt;
+    padding: 0.5em;
+    background-color: #ccc;
+    z-index: 9;
+    text-align: center;
+}
+
+.returntomenu a {
+    text-decoration: none;
+}
+
+.connectivity {
+    font-size: 12pt;
+}
+
 .msg-thread::after {
   clear: both;
 }

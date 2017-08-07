@@ -95,8 +95,18 @@ function fakelink() {
   window.location.href = this.dataset.href;
 }
 
+function socketStatus(count) {
+    var statusbox = document.querySelector('.connectivity');
+    if(statusbox) {
+        statusbox.innerText = socket.connected ? 'Connected' : 'Reconnecting (' + count + ')';
+    }
+}
+
 var socket = io.connect();
 
+socket.on('connect', socketStatus);
+socket.on('reconnect', socketStatus);
+socket.on('reconnecting', socketStatus);
 
 (function() {
     livestamp();

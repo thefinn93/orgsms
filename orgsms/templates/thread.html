@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Conversation with {{ contact.number }}{% endblock %}
 {% block body %}
+<div class="header">
+<div class="left returntomenu"><a href="{{ url_for('conversations') }}">&larr;</a></div>
+Conversation with {{ contact.number }}
+<div class="right connectivity">Connecting...</div>
+</div>
 <div class="msg-thread" data-number="{{ contact.number }}">
 {% for message in thread %}
     <div class="msg {% if message.inbound %}inbound{% else %}outbound{% endif %}" data-id="{{ message.id}}">
