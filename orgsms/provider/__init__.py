@@ -1,5 +1,6 @@
-from . import teli
+from . import teli, dummy
 
 providers = {
-    "teli": teli
+    "teli": teli,
+    "dummy": dummy
 }
