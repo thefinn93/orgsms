@@ -9,7 +9,7 @@ Conversation with {{ contact.number }}
 <div class="msg-thread" data-number="{{ contact.number }}">
 {% for message in thread %}
     <div class="msg {% if message.inbound %}inbound{% else %}outbound{% endif %}" data-id="{{ message.id}}">
-        <div class="msg-top">{% if message.inbound %}{{ contact.name }}{% else %}Me{% endif %}</div>
+        <div class="msg-top">{% if message.inbound %}{{ contact.number }}{% else %}Me{% endif %}</div>
         <img src="https://via.placeholder.com/50x50" class="circle contact-photo" />
         <div class="msg-text">{{ message.text }}</div>
         <div class="timestamp" data-livestamp="{{ message.get_timestamp() }}"></div>
