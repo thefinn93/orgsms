@@ -15,6 +15,10 @@ function newmessage(message) {
         return candidate;
       }
   }
+  if(message.source_session == socket.id) {
+      console.log('Not rendering message that appears to come from us:', message);
+      return false;
+  }
   var msg = document.createElement('div');
   msg.classList.add('msg', message.inbound ? 'inbound' : 'outbound');
 
@@ -55,9 +59,10 @@ function newmessage(message) {
 }
 
 function send(text, source, destination) {
-    console.log("Sending", text, "to", destination);
     var message = newmessage({text: text, inbound: false});
-    socket.emit('send', {"to": destination, "from": source, "text": text}, function(status) {
+    var socket_packet = {to: destination, from: source, text: text};
+    console.log("Sending packet", socket_packet);
+    socket.emit('send', socket_packet, function(status) {
         console.log(status);
         if(status.success) {
             message.timestamp.classList.remove('unsent');
