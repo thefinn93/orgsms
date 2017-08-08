@@ -42,6 +42,7 @@ function newmessage(message) {
   if(message.attachment) {
     var attachment = document.createElement('img');
     attachment.setAttribute('src', message.attachment.static_path);
+    attachment.classList.add('attachment');
     textbox.appendChild(attachment);
     textbox.appendChild(document.createElement('br'));
   }

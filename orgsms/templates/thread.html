@@ -11,7 +11,12 @@ Conversation with {{ contact.number }}
     <div class="msg {% if message.inbound %}inbound{% else %}outbound{% endif %}" data-id="{{ message.id}}">
         <div class="msg-top">{% if message.inbound %}{{ contact.number }}{% else %}Me{% endif %}</div>
         <img src="https://via.placeholder.com/50x50" class="circle contact-photo" />
-        <div class="msg-text">{% if message.attachment is not none %}<img src="{{ message.attachment.static_path }}" /><br />{% endif %}{% if message.text is not none %}{{ message.text }}{% endif %}</div>
+        <div class="msg-text">
+            {% if message.attachment is not none %}
+            <img src="{{ message.attachment.static_path }}" class="attachment" /><br />
+            {% endif %}
+            {% if message.text is not none %}{{ message.text }}{% endif %}
+        </div>
         <div class="timestamp" data-livestamp="{{ message.get_timestamp() }}"></div>
     </div>
 {% endfor %}
