@@ -29,7 +29,13 @@ def receive():
         local_number = models.PhoneNumber(number=destination, provider="teli")
         models.db.session.add(local_number)
 
-    message = models.Message(local_number=destination, remote_number=source, inbound=True, mms=mms, text=text)
+    attachment = None
+    if mms:
+        attachment = models.Attachment(url=text)
+        models.db.session.add(attachment)
+
+    message = models.Message(local_number=destination, remote_number=source, inbound=True, mms=mms,
+                             attachment=attachment, text=text if attachment is None else None)
     return message
 
 
