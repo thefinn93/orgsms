@@ -21,6 +21,7 @@ if "SENTRY_DSN" in app.config:
     else:
         Sentry(app, dsn=app.config.get('SENTRY_DSN'))
 
+app.config['MMS_STORAGE'] = os.path.join(app.static_folder, "mms-files")
 os.makedirs(app.config['MMS_STORAGE'], exist_ok=True)
 
 models.db.init_app(app)
