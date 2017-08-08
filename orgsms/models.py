@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import current_app
+from flask import current_app, url_for
 import datetime
 import os
 import uuid
@@ -33,15 +33,29 @@ class Attachment(db.Model):
 
     def __init__(self, url=None, stream=None):
         assert url is not None or stream is not None
-        self.filename = os.path.join(current_app.config.get('MMS_STORAGE'), str(uuid.uuid4()))
+        self.filename = str(uuid.uuid4())
+        path = os.path.join(current_app.config.get('MMS_STORAGE'), self.filename)
 
         if url is not None:
-            current_app.logger.debug("Downloading %s to %s", url, self.filename)
+            current_app.logger.debug("Downloading %s to %s", url, path)
             r = requests.get(url, stream=True)
             stream = r.raw
 
-        with open(self.filename, 'wb') as f:
+        with open(path, 'wb') as f:
             copyfileobj(stream, f)
+
+    @property
+    def static_path(self):
+        return url_for('static', filename="mms-files/{}".format(self.filename))
+
+    @property
+    def json(self):
+        """Returns a JSONifable dictionary."""
+        d = self.__dict__
+        d['static_path'] = self.static_path
+        if '_sa_instance_state' in d:
+            del d['_sa_instance_state']
+        return d
 
 
 class Message(db.Model):
@@ -63,8 +77,11 @@ class Message(db.Model):
     def get_timestamp(self):
         return self.timestamp.replace(tzinfo=datetime.timezone.utc).timestamp()
 
-    def dict(self):
+    @property
+    def json(self):
         d = self.__dict__
+        if self.attachment is not None:
+            d['attachment'] = d['attachment'].json
         if not isinstance(self.timestamp, float):
             d['timestamp'] = self.get_timestamp()
         if '_sa_instance_state' in d:

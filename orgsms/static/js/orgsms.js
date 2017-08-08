@@ -19,6 +19,7 @@ function newmessage(message) {
       console.log('Not rendering message that appears to come from us:', message);
       return false;
   }
+
   var msg = document.createElement('div');
   msg.classList.add('msg', message.inbound ? 'inbound' : 'outbound');
 
@@ -38,7 +39,15 @@ function newmessage(message) {
 
   var textbox = document.createElement('div');
   textbox.classList.add('msg-text');
-  textbox.innerText = message.text;
+  if(message.attachment) {
+    var attachment = document.createElement('img');
+    attachment.setAttribute('src', message.attachment.static_path);
+    textbox.appendChild(attachment);
+    textbox.appendChild(document.createElement('br'));
+  }
+  if(message.text) {
+    textbox.appendChild(document.createTextNode(message.text));
+  }
   msg.appendChild(textbox);
 
   var timestamp = document.createElement('div');
