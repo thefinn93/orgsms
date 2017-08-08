@@ -18,7 +18,7 @@ app.config.from_envvar('ORGSMS_SETTINGS', silent=True)
 if Sentry is not None:
     if "SENTRY_CONFIG" in app.config and "release" not in app.config['SENTRY_CONFIG']:
         app.config['SENTRY_CONFIG'] = version.__version__
-    sentry = Sentry(app)
+    Sentry(app)
 
 os.makedirs(app.config['MMS_STORAGE'], exist_ok=True)
 
