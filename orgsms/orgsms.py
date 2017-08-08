@@ -2,6 +2,11 @@ from flask import Flask, render_template, abort, request
 from sqlalchemy import desc
 import os
 
+try:
+    from raven.contrib.flask import Sentry
+except Import Error:
+    Sentry = None
+
 from . import models, api, config, version, socketio
 
 app = Flask(__name__)
@@ -9,6 +14,11 @@ app = Flask(__name__)
 app.config.from_object(config.DefaultConfig)
 app.config.from_pyfile('orgsms_config.py', silent=True)
 app.config.from_envvar('ORGSMS_SETTINGS', silent=True)
+
+if Sentry is not None:
+    if "SENTRY_CONFIG" in app.config and "release" not in app.config['SENTRY_CONFIG']:
+        app.config['SENTRY_CONFIG'] = version.__version__
+    sentry = Sentry(app)
 
 os.makedirs(app.config['MMS_STORAGE'], exist_ok=True)
 
