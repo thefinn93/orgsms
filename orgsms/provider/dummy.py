@@ -24,7 +24,13 @@ def receive():
         local_number = models.PhoneNumber(number=destination, provider="dummy")
         models.db.session.add(local_number)
 
-    message = models.Message(local_number=destination, remote_number=source, inbound=True, mms=mms, text=text)
+    attachment = None
+    if mms:
+        attachment = models.Attachment(url=text)
+        models.db.session.add(attachment)
+
+    message = models.Message(local_number=destination, remote_number=source, attachment=attachment,
+                             inbound=True, mms=mms, text=text)
     current_app.logger.info("Receiving from %s to %s message %s", source, destination, text)
     return message
 

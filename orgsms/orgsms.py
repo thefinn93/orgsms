@@ -1,5 +1,6 @@
 from flask import Flask, render_template, abort, request
 from sqlalchemy import desc
+import os
 
 from . import models, api, config, version, socketio
 
@@ -8,6 +9,8 @@ app = Flask(__name__)
 app.config.from_object(config.DefaultConfig)
 app.config.from_pyfile('orgsms_config.py', silent=True)
 app.config.from_envvar('ORGSMS_SETTINGS', silent=True)
+
+os.makedirs(app.config['MMS_STORAGE'], exist_ok=True)
 
 models.db.init_app(app)
 socketio.socketio.init_app(app)
