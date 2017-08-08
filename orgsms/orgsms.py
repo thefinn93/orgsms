@@ -4,7 +4,7 @@ import os
 
 try:
     from raven.contrib.flask import Sentry
-except Import Error:
+except ImportError:
     Sentry = None
 
 from . import models, api, config, version, socketio
