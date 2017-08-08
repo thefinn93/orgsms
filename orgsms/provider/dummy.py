@@ -1,5 +1,4 @@
-from flask import request, current_app, abort
-import requests
+from flask import request, current_app
 
 from orgsms import models
 
