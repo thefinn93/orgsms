@@ -15,10 +15,11 @@ app.config.from_object(config.DefaultConfig)
 app.config.from_pyfile('orgsms_config.py', silent=True)
 app.config.from_envvar('ORGSMS_SETTINGS', silent=True)
 
-if Sentry is not None:
-    if "SENTRY_CONFIG" in app.config and "release" not in app.config['SENTRY_CONFIG']:
-        app.config['SENTRY_CONFIG'] = version.__version__
-    Sentry(app)
+if "SENTRY_DSN" in app.config:
+    if Sentry is None:
+        app.logger.warning("SENTRY_DSN specified but raven not installed! Please pip install raven[flask]")
+    else:
+        Sentry(app, dsn=app.config.get('SENTRY_DSN'))
 
 os.makedirs(app.config['MMS_STORAGE'], exist_ok=True)
 
