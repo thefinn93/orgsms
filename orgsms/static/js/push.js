@@ -14,6 +14,7 @@ navigator.serviceWorker.register('/push/serviceworker.js').then(function(registr
     fetch('/push/register', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
+        credentials: "include",
         body: JSON.stringify({endpoint: subscription.endpoint, key: key, auth: auth})
     }).then((response) => {return response.json();}).then((response) => {
         if(response.success) {
