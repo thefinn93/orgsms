@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import current_app, url_for
+import pywebpush
+import json
 import datetime
 import os
 import uuid
@@ -80,10 +82,49 @@ class Message(db.Model):
     @property
     def json(self):
         d = self.__dict__
-        if self.attachment is not None:
+        if self.attachment is not None and not isinstance(d['attachment'], dict):
             d['attachment'] = d['attachment'].json
         if not isinstance(self.timestamp, float):
             d['timestamp'] = self.get_timestamp()
         if '_sa_instance_state' in d:
             del d['_sa_instance_state']
         return d
+
+    def push(self):
+        if not self.inbound:
+            return None
+        for registration in PushRegistration.query.all():
+            try:
+                registration.push({"event": "newmessage", "message": self.json})
+            except pywebpush.WebPushException as e:
+                registration.record_failure()
+                current_app.logger.exception("Failed to send push notification")
+
+
+class PushRegistration(db.Model):
+    """A push notification subscription."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    endpoint = db.Column(db.String)
+    key = db.Column(db.String, unique=True)
+    auth = db.Column(db.String)
+    failures = db.Column(db.Integer, default=0)
+
+    def __init__(self, registration):
+        self.endpoint = registration['endpoint']
+        self.key = registration['key']
+        self.auth = registration['auth']
+
+    @property
+    def subscription_info(self):
+        return {"endpoint": self.endpoint, "keys": {"auth": self.auth, "p256dh": self.key}}
+
+    def push(self, data):
+        pywebpush.webpush(self.subscription_info, data=json.dumps(data))
+        self.failures = 0
+
+    def record_failure(self):
+        self.failures += 1
+        if self.failutes > 10:
+            current_app.logger.info("Pushing to %s failed 10 times in a row, deleting subscription", self.endpoint)
+            db.session.delete(self)

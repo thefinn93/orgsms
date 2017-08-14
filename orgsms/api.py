@@ -15,6 +15,7 @@ def inbound(provider):
         message = providers[provider].receive()
         models.db.session.add(message)
         models.db.session.commit()
+        message.push()
         socketio.emit('newmessage', message.json)
         return Response()
     else:

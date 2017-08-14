@@ -7,7 +7,7 @@ try:
 except ImportError:
     Sentry = None
 
-from . import models, api, config, version, socketio
+from . import models, api, config, version, socketio, push
 
 app = Flask(__name__)
 
@@ -31,6 +31,7 @@ with app.app_context():
     models.db.create_all()
 
 app.register_blueprint(api.app, url_prefix="/api")
+app.register_blueprint(push.app, url_prefix="/push")
 
 
 @app.before_request
