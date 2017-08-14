@@ -128,3 +128,6 @@ class PushRegistration(db.Model):
         if self.failures > 10:
             current_app.logger.info("Pushing to %s failed 10 times in a row, deleting subscription", self.endpoint)
             db.session.delete(self)
+        else:
+            current_app.logger.debug("Pushing to %s failed %s times in a row, not deleting yet",
+                                     self.endpoint, self.failures)
