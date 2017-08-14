@@ -2,6 +2,9 @@
 orgsms/orgsms_config.py
 *.db
 
+# vi swap files
+*.swp
+
 ## Frontend Stuff ##
 orgsms/static/vendor
 node_modules
