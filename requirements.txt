@@ -2,3 +2,4 @@ Flask==0.12.2
 Flask-SocketIO==2.9.1
 Flask-SQLAlchemy==2.2
 requests==2.18.3
+pywebpush==1.1.0
