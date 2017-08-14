@@ -1,4 +1,4 @@
-navigator.serviceWorker.register('/push/serviceworker.js').then(function(registration) {
+navigator.serviceWorker.register('/serviceworker.js').then(function(registration) {
     return registration.pushManager.getSubscription().then(function(subscription) {
         if(subscription) {return subscription;}
         return registration.pushManager.subscribe({ userVisibleOnly: true });

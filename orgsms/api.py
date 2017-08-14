@@ -16,7 +16,7 @@ def inbound(provider):
         models.db.session.add(message)
         models.db.session.commit()
         message.push()
-        socketio.emit('newmessage', message.json)
+        socketio.emit('newmessage', message.json())
         return Response()
     else:
         return abort(404)
@@ -38,7 +38,7 @@ def send(local_number, remote_number, text, provider=None):
     current_app.logger.debug("Sending %s to %s from %s", text, remote_number, local_number)
     providers[provider].send(message)
     models.db.session.commit()
-    broadcast_msg = message.json
+    broadcast_msg = message.json()
     broadcast_msg['source_session'] = request.sid
     socketio.emit('newmessage', broadcast_msg)
     return message
@@ -58,7 +58,7 @@ def outbound_socket(json):
     current_app.logger.debug("Received message from client %s: %s", request.sid, json)
     try:
         message = send(json.get("from"), json.get("to"), json.get("text"))
-        return {"success": True, "message": message.json}
+        return {"success": True, "message": message.json()}
     except (exceptions.CantDetermineProviderException, exceptions.UnknownProviderException):
         current_app.logger.exception("Failed to send %s", str(json))
         return {"success": False}

@@ -5,11 +5,6 @@ from . import models
 app = Blueprint('push', __name__)
 
 
-@app.route('/serviceworker.js')
-def serviceworker():
-    return current_app.send_static_file('js/serviceworker.js')
-
-
 @app.route('/register', methods=["POST"])
 def register():
     current_app.logger.debug(request.json)

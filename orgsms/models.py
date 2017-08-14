@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import current_app, url_for
 import pywebpush
 import json
+import copy
 import datetime
 import os
 import uuid
@@ -50,7 +51,6 @@ class Attachment(db.Model):
     def static_path(self):
         return url_for('static', filename="mms-files/{}".format(self.filename))
 
-    @property
     def json(self):
         """Returns a JSONifable dictionary."""
         d = self.__dict__
@@ -79,26 +79,30 @@ class Message(db.Model):
     def get_timestamp(self):
         return self.timestamp.replace(tzinfo=datetime.timezone.utc).timestamp()
 
-    @property
     def json(self):
         d = self.__dict__
         if 'attachment' in d and isinstance(d['attachment'], Attachment):
-            d['attachment'] = d['attachment'].json
+            d['attachment'] = d['attachment'].json()
         if 'timestamp' in d and not isinstance(d['timestamp'], float):
             d['timestamp'] = self.get_timestamp()
         if '_sa_instance_state' in d:
             del d['_sa_instance_state']
+        # import pdb; pdb.set_trace()
+        if 'remote_number' in d:
+            d['url'] = url_for('thread', number=d['remote_number'])
         return d
 
     def push(self):
         if not self.inbound:
             return None
+        message_json = {"event": "newmessage", "message": copy.deepcopy(self.json())}
+        current_app.logger.debug(message_json)
         for registration in PushRegistration.query.all():
             try:
-                registration.push({"event": "newmessage", "message": self.json})
+                registration.push(message_json)
             except pywebpush.WebPushException as e:
                 registration.record_failure()
-                current_app.logger.exception("Failed to send push notification")
+        current_app.logger.debug(message_json)
 
 
 class PushRegistration(db.Model):

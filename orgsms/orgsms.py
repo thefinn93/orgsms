@@ -60,3 +60,8 @@ def thread(number):
     if len(messages) == 0 and contact is None:
         return abort(404)
     return render_template('thread.html', thread=messages, contact=contact, number=number.number)
+
+
+@app.route('/serviceworker.js')
+def serviceworker():
+    return app.send_static_file('js/serviceworker.js')
