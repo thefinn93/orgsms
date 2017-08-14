@@ -2,16 +2,20 @@ function notificationClick(event) {
     var url = event.notification.data.url;
     console.log('Opening or focusing', url);
     event.notification.close();
-    clients.matchAll().then(function(c) {
-        console.log('Searching for existing window among', c);
-        for(i = 0; i < c.length; i++) {
-            if(c[i].url === url) {
-                c[i].focus();
-                console.log('Focusing', c[i]);
-                return c[i]
+    self.clients.claim().then(function() {
+        return clients.matchAll({type: 'window'});
+    }).then(function(allclients) {
+        console.log('Searching for existing window among', allclients);
+        for(i = 0; i < allclients.length; i++) {
+            if(allclients[i].url === url) {
+                allclients[i].focus();
+                console.log('Focusing', allclients[i]);
+                return allclients[i];
             }
         }
         console.log('No clients found, opening a new window');
+    }).then(function(client) {
+        if(client) {return client;}
         return clients.openWindow(url).then(function(windowClient) {
             console.log('Opened', windowClient);
             return windowClient;
