@@ -82,9 +82,9 @@ class Message(db.Model):
     @property
     def json(self):
         d = self.__dict__
-        if self.attachment is not None and not isinstance(d['attachment'], dict):
+        if 'attachment' in d and isinstance(d['attachment'], Attachment):
             d['attachment'] = d['attachment'].json
-        if not isinstance(self.timestamp, float):
+        if 'timestamp' in d and not isinstance(d['timestamp'], float):
             d['timestamp'] = self.get_timestamp()
         if '_sa_instance_state' in d:
             del d['_sa_instance_state']
@@ -131,3 +131,4 @@ class PushRegistration(db.Model):
         else:
             current_app.logger.debug("Pushing to %s failed %s times in a row, not deleting yet",
                                      self.endpoint, self.failures)
+            db.session.commit()
