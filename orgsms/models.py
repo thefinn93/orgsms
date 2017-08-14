@@ -125,6 +125,6 @@ class PushRegistration(db.Model):
 
     def record_failure(self):
         self.failures += 1
-        if self.failutes > 10:
+        if self.failures > 10:
             current_app.logger.info("Pushing to %s failed 10 times in a row, deleting subscription", self.endpoint)
             db.session.delete(self)
