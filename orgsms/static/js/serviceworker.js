@@ -5,8 +5,19 @@ self.addEventListener('push', function(event) {
     } else {
         var payload = event.data.json();
         var title = "Text from " + payload.message.remote_number;
-        var body = payload.message.mms ? "" : payload.message.text;
-        notification = self.registration.showNotification(title, {body: body});
+        var options = {
+            requireInteraction: true,
+            tag: "orgsms-message-" + payload.message.id
+        };
+
+        if(payload.message.mms) {
+            options.image = payload.message.attachment.static_path;
+        } else {
+            options.body = payload.message.text;
+        }
+        console.log('Displaying notification', title, options);
+        notification = self.registration.showNotification(title, options);
     }
+    console.log(notification);
     event.waitUntil(notification);
 });
