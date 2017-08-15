@@ -1,26 +1,23 @@
 function notificationClick(event) {
-    var url = event.notification.data.url;
+    var url = self.origin + event.notification.data.url;
     console.log('Opening or focusing', url);
-    event.notification.close();
-    self.clients.claim().then(function() {
-        return clients.matchAll({type: 'window'});
-    }).then(function(allclients) {
-        console.log('Searching for existing window among', allclients);
-        for(i = 0; i < allclients.length; i++) {
-            if(allclients[i].url === url) {
-                allclients[i].focus();
-                console.log('Focusing', allclients[i]);
-                return allclients[i];
+    var windowPromise = self.clients.matchAll().then(function(clientList) {
+        console.log('Searching for existing window among', clientList);
+        for(var i = 0; i < clientList.length; i++) {
+            var client = clientList[i];
+            if(client.url === url) {
+                console.log('Focusing', client);
+                return client.focus();
             }
         }
         console.log('No clients found, opening a new window');
     }).then(function(client) {
-        if(client) {return client;}
-        return clients.openWindow(url).then(function(windowClient) {
-            console.log('Opened', windowClient);
-            return windowClient;
-        });
+        if(!client) {
+            console.log('No client found with url =', url, '- opening new window');
+            self.clients.openWindow(event.notification.data.url)
+        };
     }).catch((e) => {console.error(e);});
+    event.waitUntil(windowPromise);
 }
 
 
@@ -53,3 +50,11 @@ function push(event) {
 
 self.addEventListener('notificationclick', notificationClick);
 self.addEventListener('push', push);
+
+self.addEventListener('install', function(event) {
+    event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', function(event) {
+    event.waitUntil(self.clients.claim());
+});
