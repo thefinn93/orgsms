@@ -22,13 +22,7 @@ def register():
 
 
 def init_vapid():
-    vapid = Vapid()
-    vapid.from_file(current_app.config.get('VAPID_KEY'))
-    if vapid.public_key is None:
-        current_app.logger.warning('Unable to open vapid key at %s, generating a new one',
-                                   current_app.config.get('VAPID_KEY'))
-        vapid.generate_keys()
-        vapid.save_key(current_app.config.get('VAPID_KEY'))
+    vapid = Vapid.from_file(current_app.config.get('VAPID_KEY'))
     current_app.config['VAPID_PRIVATE_KEY'] = vapid.private_key.private_bytes(
         encoding=serialization.Encoding.DER,
         format=serialization.PrivateFormat.PKCS8,
