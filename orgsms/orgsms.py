@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, abort, request, jsonify
 from sqlalchemy import desc
 import os
 
@@ -65,3 +65,14 @@ def thread(number):
 @app.route('/serviceworker.js')
 def serviceworker():
     return app.send_static_file('js/serviceworker.js')
+
+
+@app.route('/manifest.json')
+def manifest():
+    return jsonify({
+        "name": "OrgSMS",
+        "short_name": "orgsms",
+        "start_url": "/",
+        "display": "standalone",
+        "gcm_user_visible_only": True
+    })

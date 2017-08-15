@@ -69,3 +69,4 @@ docs/_build/
 # PyBuilder
 target/
 orgsms/static/mms-files
+orgsms/vapid.pem

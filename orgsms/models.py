@@ -124,7 +124,9 @@ class PushRegistration(db.Model):
         return {"endpoint": self.endpoint, "keys": {"auth": self.auth, "p256dh": self.key}}
 
     def push(self, data):
-        pywebpush.webpush(self.subscription_info, data=json.dumps(data))
+        pywebpush.webpush(self.subscription_info, data=json.dumps(data),
+                          vapid_private_key=current_app.config.get("VAPID_KEY"),
+                          vapid_claims={"sub": "mailto:{}".format(current_app.config.get("VAPID_EMAIL"))})
         self.failures = 0
 
     def record_failure(self):
