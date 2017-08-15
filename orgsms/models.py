@@ -9,6 +9,8 @@ import uuid
 import requests
 from shutil import copyfileobj
 
+from .socketio import socketio
+
 db = SQLAlchemy()
 
 
@@ -95,11 +97,11 @@ class Message(db.Model):
     def push(self):
         if not self.inbound:
             return None
-        message_json = {"event": "newmessage", "message": copy.deepcopy(self.json())}
-        current_app.logger.debug(message_json)
+        message_json = copy.deepcopy(self.json())
+        socketio.emit('newmessage', message_json)
         for registration in PushRegistration.query.all():
             try:
-                registration.push(message_json)
+                registration.push({"type": "newmessage", "message": message_json})
             except pywebpush.WebPushException as e:
                 registration.record_failure()
         current_app.logger.debug(message_json)

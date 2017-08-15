@@ -16,7 +16,6 @@ def inbound(provider):
         models.db.session.add(message)
         models.db.session.commit()
         message.push()
-        socketio.emit('newmessage', message.json())
         return Response()
     else:
         return abort(404)
