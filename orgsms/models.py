@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import current_app, url_for
 import pywebpush
 import json
-import copy
 import datetime
 import os
 import uuid
@@ -55,10 +54,9 @@ class Attachment(db.Model):
 
     def json(self):
         """Returns a JSONifable dictionary."""
-        d = self.__dict__
-        d['static_path'] = self.static_path
-        if '_sa_instance_state' in d:
-            del d['_sa_instance_state']
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = str(getattr(self, column.name))
         return d
 
 
@@ -82,14 +80,13 @@ class Message(db.Model):
         return self.timestamp.replace(tzinfo=datetime.timezone.utc).timestamp()
 
     def json(self):
-        d = self.__dict__
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = getattr(self, column.name)
         if 'attachment' in d and isinstance(d['attachment'], Attachment):
             d['attachment'] = d['attachment'].json()
         if 'timestamp' in d and not isinstance(d['timestamp'], float):
             d['timestamp'] = self.get_timestamp()
-        if '_sa_instance_state' in d:
-            del d['_sa_instance_state']
-        # import pdb; pdb.set_trace()
         if 'remote_number' in d:
             d['url'] = url_for('thread', number=d['remote_number'])
         return d
@@ -97,7 +94,7 @@ class Message(db.Model):
     def push(self):
         if not self.inbound:
             return None
-        message_json = copy.deepcopy(self.json())
+        message_json = self.json()
         socketio.emit('newmessage', message_json)
         for registration in PushRegistration.query.all():
             try:
