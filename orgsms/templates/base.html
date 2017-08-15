@@ -5,12 +5,12 @@
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
     <link href="{{ url_for('static', filename='css/orgsms.css') }}" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
     <title>{% block title %}{% endblock %} | OrgSMS</title>
 </head>
 
 <body>
     {% block body %}{% endblock %}
+    <script type="text/javascript">window.applicationServerKey = "{{ config.VAPID_APPLICATION_SERVER_KEY }}"; </script>
     <script src="{{ url_for('static', filename='vendor/socket.io-client/socket.io.slim.js') }}"></script>
     <script src="{{ url_for('static', filename='vendor/moment/moment.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/orgsms.js') }}"></script>

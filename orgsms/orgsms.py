@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, request, jsonify
+from flask import Flask, render_template, abort, request
 from sqlalchemy import desc
 import os
 
@@ -28,6 +28,7 @@ models.db.init_app(app)
 socketio.socketio.init_app(app)
 
 with app.app_context():
+    push.init_vapid()
     models.db.create_all()
 
 app.register_blueprint(api.app, url_prefix="/api")
@@ -65,14 +66,3 @@ def thread(number):
 @app.route('/serviceworker.js')
 def serviceworker():
     return app.send_static_file('js/serviceworker.js')
-
-
-@app.route('/manifest.json')
-def manifest():
-    return jsonify({
-        "name": "OrgSMS",
-        "short_name": "orgsms",
-        "start_url": "/",
-        "display": "standalone",
-        "gcm_user_visible_only": True
-    })
